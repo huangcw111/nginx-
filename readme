@@ -1,0 +1,55 @@
+一.配置nginx ：
+    1.gcc: yum install -y gcc gcc-c++
+    2. PCRE库(报错：yum install -y gcc gcc-c++):
+        $cd /usr/local/
+        $ wget http://jaist.dl.sourceforge.net/project/pcre/pcre/8.33/pcre-8.33.tar.gz
+        $ tar -zxvf pcre-8.33.tar.gz
+        $ cd pcre-8.33
+        $ ./configure
+        $ make && make install
+    3.SSL：
+        $ cd /usr/local/
+        $ wget http://www.openssl.org/source/openssl-1.0.1j.tar.gz
+        $ tar -zxvf openssl-1.0.1j.tar.gz
+        $ cd openssl-1.0.1j
+        $ ./config
+        $ make && make install
+    4.zilib
+        $ cd /usr/local/
+        $ wget http://zlib.net/zlib-1.2.11.tar.gz
+        $ tar -zxvf zlib-1.2.11.tar.gz
+       $ cd zlib-1.2.11
+        $ ./configure
+        $ make && make install
+    5.安装nginx
+        $ cd /usr/local/
+        $ wget http://nginx.org/download/nginx-1.8.0.tar.gz
+        $ tar -zxvf nginx-1.8.0.tar.gz
+        $ cd nginx-1.8.0
+        $ ./configure --user=nobody --group=nobody --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_gzip_static_module --with-http_realip_module --with-http_sub_module --with-http_ssl_module
+        (报错加--with-pcre=/usr/local/pcre-8.33)
+        $ make && make install
+        
+二.启用和重启
+    1.重启：nginx：/usr/local/nginx/sbin/nginx -s reload
+    2.启动：/usr/local/nginx/sbin/nginx
+    
+三.推荐nginx配置写法
+    1.总配置：
+      /usr/local/nginx/conf/nginx.conf :  加上include /usr/webConf/*.conf
+    2.文件配置：
+        *.conf:
+            server {
+                listen 8082; # 监听端口
+                server_name 39.108.13.220:8082; # 站点域名
+                root /usr/webConf/foodfun/dist; # 站点根目录
+                index index.html index.htm index.php; # 默认导航页
+
+                location /foodfun/{
+                    proxy_pass http://39.108.13.220:8090/foodfun/;
+                    proxy_connect_timeout 300s;
+                    proxy_send_timeout 300s;
+                    proxy_read_timeout 300s;
+                }
+
+             }
