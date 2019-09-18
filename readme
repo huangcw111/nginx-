@@ -1,4 +1,4 @@
-一.配置nginx ：
+#配置nginx ：
     1.gcc: yum install -y gcc gcc-c++
     2. PCRE库(报错：yum install -y gcc gcc-c++):
         $cd /usr/local/
